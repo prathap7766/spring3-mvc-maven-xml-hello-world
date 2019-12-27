@@ -32,6 +32,12 @@ pipeline {
         }
             }
         }
+		        stage('deploy'){
+            steps{
+            withCredentials([usernameColonPassword(credentialsId: 'tomcat_credenticials', variable: 'tom_crede')]) {
+            sh "curl -v -u ${tom_crede} -T /var/lib/jenkins/workspace/jenkinsfile_pipeline/target/spring3-mvc-maven-xml-hello-world-1.0-SNAPSHOT.war 'http://ec2-3-15-174-162.us-east-2.compute.amazonaws.com:8080/manager/html/text/deploy?path=/jenkins-pipeline&update=true'"}
+            }
+        }
         stage("publish to nexus") {
             steps {
                 script {
