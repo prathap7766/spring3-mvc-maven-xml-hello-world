@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label "any"
-    }
+    agent any {
     tools {
         // Note: this should match with the tool name configured in your jenkins instance (JENKINS_URL/configureTools/)
         maven "mvn"
@@ -29,13 +27,7 @@ pipeline {
         }
         stage("mvn build") {
             steps {
-                script {
-                    // If you are using Windows then you should use "bat" step
-                    // Since unit testing is out of the scope we skip them
-                    //bat(/${MAVEN_HOME}\bin\mvn -Dmaven.test.failure.ignore clean package/)
-                     sh "mvn package"
-      
-        }
+                    sh "mvn package"
             }
         }
         stage("publish to nexus") {
@@ -58,7 +50,7 @@ pipeline {
                             protocol: NEXUS_PROTOCOL,
                             nexusUrl: NEXUS_URL,
                             groupId: pom.groupId,
-                            version: '${BUILD_NUMBER}',
+                            version: pom.version,
                             repository: NEXUS_REPOSITORY,
                             credentialsId: NEXUS_CREDENTIAL_ID,
                             artifacts: [
@@ -80,5 +72,7 @@ pipeline {
                 }
             }
         }
-	}
+    }
 }
+
+
