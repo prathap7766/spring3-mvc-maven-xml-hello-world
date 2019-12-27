@@ -1,20 +1,16 @@
 pipeline {
-    agent any {
-    tools {
-        // Note: this should match with the tool name configured in your jenkins instance (JENKINS_URL/configureTools/)
-        maven "mvn"
-    }
+    agent any
     environment {
         // This can be nexus3 or nexus2
         NEXUS_VERSION = "nexus3"
         // This can be http or https
         NEXUS_PROTOCOL = "http"
         // Where your Nexus is running
-        NEXUS_URL = "ec2-3-136-236-219.us-east-2.compute.amazonaws.com:8081"
+        NEXUS_URL = "http://ec2-3-136-236-219.us-east-2.compute.amazonaws.com:8081"
         // Repository where we will upload the artifact
         NEXUS_REPOSITORY = "jenins_nexus"
         // Jenkins credential id to authenticate to Nexus OSS
-        NEXUS_CREDENTIAL_ID = "nexus_credentials"
+        NEXUS_CREDENTIAL_ID = "nexus-credentials"
     }
     stages {
         stage("clone code") {
@@ -27,7 +23,13 @@ pipeline {
         }
         stage("mvn build") {
             steps {
-                    sh "mvn package"
+                script {
+                    // If you are using Windows then you should use "bat" step
+                    // Since unit testing is out of the scope we skip them
+                    //bat(/${MAVEN_HOME}\bin\mvn -Dmaven.test.failure.ignore clean package/)
+                     sh "mvn package"
+      
+        }
             }
         }
         stage("publish to nexus") {
@@ -50,7 +52,7 @@ pipeline {
                             protocol: NEXUS_PROTOCOL,
                             nexusUrl: NEXUS_URL,
                             groupId: pom.groupId,
-                            version: pom.version,
+                            version: '${BUILD_NUMBER}',
                             repository: NEXUS_REPOSITORY,
                             credentialsId: NEXUS_CREDENTIAL_ID,
                             artifacts: [
@@ -74,6 +76,4 @@ pipeline {
         }
     }
 }
-}
-
 
