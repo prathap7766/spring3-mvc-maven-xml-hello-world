@@ -34,8 +34,8 @@ pipeline {
         }
 		stage('deploy'){
             steps{
-            withCredentials([usernameColonPassword(credentialsId: 'tomcat_credenticials', variable: 'cred')]) {
-            sh "curl -v -u ${cred} -T /var/lib/jenkins/workspace/latest_pipeline/target/spring3-mvc-maven-xml-hello-world-1.0-SNAPSHOT.war 'http://ec2-18-220-183-188.us-east-2.compute.amazonaws.com:8080/manager/html/text/deploy?path=/latest_pipeline'"}
+            withCredentials([usernameColonPassword(credentialsId: 'tomcat_credenticials', variable: 'tom_cred')]) {
+            sh "curl -v -u ${tom_cred} -T /var/lib/jenkins/workspace/latest_pipeline/target/spring3-mvc-maven-xml-hello-world-1.0-SNAPSHOT.war 'http://ec2-18-220-183-188.us-east-2.compute.amazonaws.com:8080/manager/html/text/deploy?path=/new_pipe'"}
             }
         }
         stage("publish to nexus") {
