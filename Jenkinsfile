@@ -6,9 +6,9 @@ pipeline {
         // This can be http or https
         NEXUS_PROTOCOL = "http"
         // Where your Nexus is running
-        NEXUS_URL = "ec2-3-135-213-205.us-east-2.compute.amazonaws.com:8081"
+        NEXUS_URL = "http://ec2-18-191-202-153.us-east-2.compute.amazonaws.com:8081"
         // Repository where we will upload the artifact
-        NEXUS_REPOSITORY = "new_pipeline"
+        NEXUS_REPOSITORY = "final_pipeline"
         // Jenkins credential id to authenticate to Nexus OSS
         NEXUS_CREDENTIAL_ID = "nexus-credentials"
     }
@@ -30,12 +30,6 @@ pipeline {
                      sh "mvn package"
       
         }
-            }
-        }
-		stage('deploy'){
-            steps{
-            withCredentials([usernameColonPassword(credentialsId: 'tomcat_credenticials', variable: 'tom_cred')]) {
-            sh "curl -v -u ${tom_cred} -T /var/lib/jenkins/workspace/latest_pipeline/target/spring3-mvc-maven-xml-hello-world-1.0-SNAPSHOT.war 'http://ec2-18-220-183-188.us-east-2.compute.amazonaws.com:8080/manager/html/text/deploy?path=/new_pipe'"}
             }
         }
         stage("publish to nexus") {
