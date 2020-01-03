@@ -32,5 +32,11 @@ pipeline {
         }
             }
         }
-	}
-	}
+		stage('deploy'){
+            steps{
+            withCredentials([usernameColonPassword(credentialsId: 'tomcat_credenticials', variable: 'tom_crede')]) {
+            sh "curl -v -u ${tom_crede} -T /var/lib/jenkins/workspace/pipeline_final/target 'http://ec2-18-219-5-52.us-east-2.compute.amazonaws.com:8080/manager/text/deploy?path=/final-pipeline&update=true'"}
+            }
+        }
+	}	
+}
